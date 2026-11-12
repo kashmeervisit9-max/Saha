@@ -28,17 +28,18 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-35
-            build-tools;35.0.0
 
-      - name: Extract project ZIP
+      - name: Install Android packages
+        run: |
+          sdkmanager "platform-tools"
+          sdkmanager "platforms;android-35"
+          sdkmanager "build-tools;35.0.0"
+
+      - name: Find and extract ZIP
         run: |
           ZIP_FILE=$(find . -maxdepth 1 -name '*.zip' -print -quit)
           if [ -z "$ZIP_FILE" ]; then
-            echo "Project ZIP not found"
+            echo "ZIP file not found"
             exit 1
           fi
           mkdir project
