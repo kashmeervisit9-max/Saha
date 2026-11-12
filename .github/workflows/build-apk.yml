@@ -1,5 +1,5 @@
 
-name: Build Aliyan Business Manager APK
+name: Build SAHA APK
 
 on:
   workflow_dispatch:
