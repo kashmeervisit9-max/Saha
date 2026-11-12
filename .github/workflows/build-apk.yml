@@ -26,13 +26,17 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Install Android SDK packages
+      - name: Install Android SDK
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses
-          sdkmanager --sdk_root="$ANDROID_HOME" "platform-tools"
-          sdkmanager --sdk_root="$ANDROID_HOME" "platforms;android-35"
-          sdkmanager --sdk_root="$ANDROID_HOME" "build-tools;35.0.0"
+          SDK="$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager"
+          if [ ! -f "$SDK" ]; then
+            echo "SDK Manager not found"
+            exit 1
+          fi
+          yes | "$SDK" --sdk_root="$ANDROID_HOME" --licenses || true
+          "$SDK" --sdk_root="$ANDROID_HOME" "platform-tools"
+          "$SDK" --sdk_root="$ANDROID_HOME" "platforms;android-35"
+          "$SDK" --sdk_root="$ANDROID_HOME" "build-tools;35.0.0"
 
       - name: Extract project
         run: |
@@ -43,7 +47,6 @@ jobs:
           fi
           mkdir project
           unzip "$ZIP_FILE" -d project
-          ls -la project
 
       - name: Build APK
         run: gradle -p project assembleDebug
